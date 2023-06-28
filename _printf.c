@@ -1,5 +1,5 @@
 #include "main.h"
-#include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <stdarg.h>
 
@@ -24,19 +24,27 @@ int _printf(const char *format, ...)
 
 	for (i = 0; i < c_count; i++)
 	{
-		if (format[i] == 'c')
+		if (format[i] == '%')
 		{
-			c_value = (char) va_arg(args, int);
-			printf("%c\n", c_value);
-		}
-		else if (format[i] == 's')
-		{
-			s_value = va_arg(args, char*);
-			printf("%s\n", s_value);
-		}
-		else if (format[i] == '%')
-		{
-			printf("%s\n", format);
+			format++;
+
+			if (format[i] == 'c')
+			{
+				c_value = (char) va_arg(args, int);
+				write(1, &c_value, 1);
+				write(1, "\n", 1);
+			}
+			else if (format[i] == 's')
+			{
+				s_value = va_arg(args, char*);
+				write(1, s_value, strlen(s_value));
+				write(1, "\n", 1);
+			}
+			else if (format[i] == '%')
+			{
+				write(1, format, 1);
+				write(1, "\n", 1);
+			}
 		}
 	}
 
